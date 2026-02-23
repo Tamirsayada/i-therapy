@@ -125,3 +125,11 @@ body {
     padding-bottom: 3.5rem;
   }
 }
+
+/* Prevent mobile browser overscroll/bounce */
+@media (max-width: 767px) {
+  html, body {
+    overflow: hidden;
+    height: 100dvh;
+  }
+}

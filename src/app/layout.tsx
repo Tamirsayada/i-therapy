@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ClientLayout } from "@/components/layout/ClientLayout";
 
@@ -6,6 +6,13 @@ export const metadata: Metadata = {
   title: "i-therapy | זיהוי ושחרור אמונות מגבילות",
   description:
     "אפליקציה חכמה שעוזרת לך לזהות ולשחרר אמונות מגבילות באמצעות NLP",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

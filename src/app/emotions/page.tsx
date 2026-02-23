@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/layout/PageContainer";
@@ -38,11 +39,28 @@ const styles: {
   },
 ];
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+}
+
 export default function EmotionsPage() {
   const router = useRouter();
   const createSession = useSessionStore((s) => s.createSession);
+  const isMobile = useIsMobile();
+  const [showMobileModal, setShowMobileModal] = useState(false);
 
   const handleStyleSelect = (style: CommunicationStyle) => {
+    if (isMobile) {
+      setShowMobileModal(true);
+      return;
+    }
     const sessionId = createSession("emotions", style);
     router.push(`/emotions/${sessionId}`);
   };
@@ -76,6 +94,28 @@ export default function EmotionsPage() {
           </Card>
         ))}
       </div>
+
+      {showMobileModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-xl">
+            <div className="text-4xl mb-4">🖥️</div>
+            <h3 className="text-xl font-bold text-text-primary mb-3">
+              זמין רק במחשב
+            </h3>
+            <p className="text-text-secondary text-sm leading-relaxed mb-6">
+              תהליך שחרור הרגשות והתחושות כולל שיחה קולית ועיבוד בילטרלי שדורשים מסך גדול.
+              <br />
+              <span className="font-medium">היכנס מהמחשב כדי להתחיל את התהליך.</span>
+            </p>
+            <button
+              onClick={() => setShowMobileModal(false)}
+              className="w-full py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors"
+            >
+              הבנתי
+            </button>
+          </div>
+        </div>
+      )}
     </PageContainer>
   );
 }
