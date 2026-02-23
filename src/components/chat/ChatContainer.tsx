@@ -18,6 +18,7 @@ export function ChatContainer({
 }: ChatContainerProps) {
   const [viewportHeight, setViewportHeight] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const pollTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const scrollToBottom = useCallback(() => {
     if (!containerRef.current) return;
@@ -27,24 +28,28 @@ export function ChatContainer({
     }
   }, []);
 
+  const syncViewport = useCallback(() => {
+    const vv = window.visualViewport;
+    if (vv) {
+      setViewportHeight(vv.height);
+      scrollToBottom();
+    }
+  }, [scrollToBottom]);
+
   useEffect(() => {
     const vv = window.visualViewport;
     if (!vv) return;
 
-    const update = () => {
-      setViewportHeight(vv.height);
-    };
-
     // Initial set
-    update();
+    setViewportHeight(vv.height);
 
-    vv.addEventListener("resize", update);
-    vv.addEventListener("scroll", update);
+    vv.addEventListener("resize", syncViewport);
+    vv.addEventListener("scroll", syncViewport);
     return () => {
-      vv.removeEventListener("resize", update);
-      vv.removeEventListener("scroll", update);
+      vv.removeEventListener("resize", syncViewport);
+      vv.removeEventListener("scroll", syncViewport);
     };
-  }, []);
+  }, [syncViewport]);
 
   // When viewport changes (keyboard opens/closes), scroll to bottom
   useEffect(() => {
@@ -53,24 +58,27 @@ export function ChatContainer({
     }
   }, [viewportHeight, scrollToBottom]);
 
-  // Also handle focus event on any input inside container
-  // This catches the moment the user taps the input, before keyboard fully opens
+  // On focus: poll with setTimeout delays to catch keyboard animation
+  // iOS keyboard animation takes ~300ms, so check at multiple intervals
   const handleFocusIn = useCallback(() => {
-    // Poll for viewport changes during keyboard animation (300ms)
-    const vv = window.visualViewport;
-    if (!vv) return;
+    // Clear any existing poll timers
+    pollTimersRef.current.forEach(clearTimeout);
+    pollTimersRef.current = [];
 
-    let frame = 0;
-    const poll = () => {
-      setViewportHeight(vv.height);
-      scrollToBottom();
-      frame++;
-      if (frame < 15) {
-        requestAnimationFrame(poll);
-      }
+    // Poll at multiple intervals during keyboard animation
+    const delays = [50, 100, 150, 200, 250, 300, 400, 500];
+    for (const delay of delays) {
+      const timer = setTimeout(syncViewport, delay);
+      pollTimersRef.current.push(timer);
+    }
+  }, [syncViewport]);
+
+  // Cleanup timers
+  useEffect(() => {
+    return () => {
+      pollTimersRef.current.forEach(clearTimeout);
     };
-    requestAnimationFrame(poll);
-  }, [scrollToBottom]);
+  }, []);
 
   const mobileHeight = viewportHeight ? `${viewportHeight - 56}px` : "calc(100dvh - 56px)";
 
