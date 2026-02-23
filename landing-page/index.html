@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>i-therapy — שחרר את האמונה שעוצרת אותך</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-card-hover: #1a1a25;
+      --text: #e8e8ed;
+      --text-muted: #8b8b9e;
+      --accent: #7c5cfc;
+      --accent-light: #9b82fc;
+      --accent-glow: rgba(124, 92, 252, 0.15);
+      --green: #34d399;
+      --red: #f87171;
+      --orange: #fbbf24;
+      --border: #1e1e2e;
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ===== UTILITY ===== */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+    .container-wide { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent-glow);
+      color: var(--accent-light);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid rgba(124, 92, 252, 0.2);
+    }
+
+    .section { padding: 100px 0; }
+    .section-sm { padding: 60px 0; }
+
+    .text-center { text-align: center; }
+    .text-muted { color: var(--text-muted); }
+    .text-accent { color: var(--accent-light); }
+    .text-green { color: var(--green); }
+    .text-red { color: var(--red); }
+
+    h1, h2, h3 { line-height: 1.3; }
+
+    /* ===== CTA BUTTON ===== */
+    .cta-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 18px 48px;
+      border-radius: 12px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(124, 92, 252, 0.3);
+    }
+    .cta-btn:hover {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(124, 92, 252, 0.4);
+    }
+    .cta-btn-outline {
+      background: transparent;
+      border: 2px solid var(--accent);
+      box-shadow: none;
+    }
+    .cta-btn-outline:hover {
+      background: var(--accent-glow);
+    }
+
+    .cta-sub {
+      display: block;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 100;
+      padding: 16px 0;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container-wide {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent-light); }
+    nav .cta-btn {
+      padding: 10px 28px;
+      font-size: 0.95rem;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 160px 0 100px;
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(124, 92, 252, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      margin: 24px 0;
+      max-width: 750px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero .subtitle {
+      font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+    .hero-stat {
+      margin-top: 48px;
+      padding: 16px 32px;
+      display: inline-block;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .hero-stat strong { color: var(--accent-light); }
+
+    /* ===== PAIN SECTION ===== */
+    .pain-section { background: var(--bg); }
+    .pain-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .pain-header h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-top: 16px;
+    }
+
+    .pain-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      margin-bottom: 32px;
+      transition: border-color 0.3s;
+    }
+    .pain-card:hover { border-color: rgba(124, 92, 252, 0.3); }
+    .pain-card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .pain-card p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 16px;
+    }
+    .pain-card .stat {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 8px 16px;
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.15);
+      border-radius: 8px;
+      color: var(--red);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* ===== SHIFT SECTION ===== */
+    .shift-section {
+      background: linear-gradient(180deg, var(--bg) 0%, #0d0d18 100%);
+      text-align: center;
+    }
+    .shift-section h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+    .shift-section .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 48px;
+    }
+    .beliefs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      max-width: 700px;
+      margin: 0 auto 48px;
+    }
+    .belief-tag {
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+    .shift-metaphor {
+      font-size: 1.15rem;
+      color: var(--text);
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 32px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(124, 92, 252, 0.2);
+      border-radius: var(--radius);
+      line-height: 1.9;
+    }
+
+    /* ===== TRANSFORMATION ===== */
+    .transform-section { background: #0d0d18; }
+    .transform-section h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 56px;
+    }
+    .transform-card {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+    }
+    .transform-before {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+    .transform-arrow {
+      font-size: 1.6rem;
+      color: var(--accent-light);
+    }
+    .transform-after {
+      text-align: center;
+      color: var(--green);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .transform-note {
+      text-align: center;
+      margin-top: 32px;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+    .transform-note strong { color: var(--text); }
+
+    @media (max-width: 600px) {
+      .transform-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 12px;
+      }
+      .transform-arrow { transform: rotate(90deg); }
+    }
+
+    /* ===== HOW IT WORKS ===== */
+    .how-section {
+      background: var(--bg);
+    }
+    .how-section h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 56px;
+    }
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .step {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(124, 92, 252, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--accent-light);
+    }
+    .step-content h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .step-content p { color: var(--text-muted); font-size: 0.98rem; }
+    .step-time {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 12px;
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.15);
+      border-radius: 6px;
+      color: var(--green);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* ===== FEATURES ===== */
+    .features-section { background: #0d0d18; }
+    .features-section h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 56px;
+    }
+    .feature-card {
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+    }
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .feature-card .example {
+      padding: 20px;
+      margin: 16px 0;
+      background: rgba(124, 92, 252, 0.05);
+      border-right: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+    .feature-card .outcome {
+      color: var(--green);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    /* ===== PRICING ===== */
+    .pricing-section { background: var(--bg); }
+    .pricing-section h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    .pricing-section .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+      font-size: 1.05rem;
+    }
+
+    .pricing-compare {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .pricing-old {
+      padding: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-align: center;
+    }
+    .pricing-old .name {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .pricing-old .price {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--red);
+      text-decoration: line-through;
+      text-decoration-color: rgba(248, 113, 113, 0.5);
+    }
+    .pricing-old .note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .pricing-main {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 48px;
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 0 60px rgba(124, 92, 252, 0.1);
+    }
+    .pricing-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      padding: 6px 24px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .pricing-main .price {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--text);
+      margin: 16px 0 4px;
+    }
+    .pricing-main .price-period {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 32px;
+    }
+    .pricing-features {
+      list-style: none;
+      text-align: right;
+      margin-bottom: 32px;
+    }
+    .pricing-features li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--green);
+      margin-left: 12px;
+      font-weight: 700;
+    }
+    .pricing-compare-line {
+      margin-top: 24px;
+      padding: 16px;
+      background: rgba(124, 92, 252, 0.05);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .pricing-compare-line strong { color: var(--text); }
+
+    /* ===== SOCIAL PROOF ===== */
+    .proof-section { background: #0d0d18; }
+    .proof-section h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 800;
+      margin-bottom: 48px;
+    }
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .testimonial {
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .testimonial p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 20px;
+      font-style: italic;
+      line-height: 1.8;
+    }
+    .testimonial .author {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .testimonial .role {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .proof-note {
+      text-align: center;
+      margin-top: 32px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    /* ===== FAQ ===== */
+    .faq-section { background: var(--bg); }
+    .faq-section h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 48px;
+    }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      background: var(--bg-card);
+    }
+    .faq-question {
+      width: 100%;
+      padding: 24px 32px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-align: right;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.3s;
+    }
+    .faq-question:hover { color: var(--accent-light); }
+    .faq-question .icon {
+      font-size: 1.4rem;
+      transition: transform 0.3s;
+      flex-shrink: 0;
+      margin-right: 16px;
+    }
+    .faq-item.open .faq-question .icon { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 500px;
+      padding: 0 32px 24px;
+    }
+    .faq-answer p {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.8;
+    }
+    .faq-answer p + p { margin-top: 12px; }
+    .faq-answer strong { color: var(--text); }
+
+    /* ===== FINAL CTA ===== */
+    .final-cta {
+      padding: 120px 0;
+      text-align: center;
+      background: linear-gradient(180deg, var(--bg) 0%, #0d0d18 50%, var(--bg) 100%);
+      position: relative;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(124, 92, 252, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-cta h2 {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .final-cta .alt {
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      color: var(--accent-light);
+      margin-bottom: 40px;
+      font-weight: 600;
+    }
+    .final-cta .quote {
+      margin-top: 32px;
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    footer p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    footer a { color: var(--accent-light); text-decoration: none; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .section { padding: 64px 0; }
+      .hero { padding: 120px 0 64px; }
+      .pain-card, .feature-card, .step { padding: 28px; }
+      .pricing-main { padding: 32px 24px; }
+      .pricing-compare { grid-template-columns: 1fr 1fr; }
+      .step { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .pricing-compare { grid-template-columns: 1fr; }
+      .beliefs-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <div class="container-wide">
+    <a href="#" class="logo">i<span>-therapy</span></a>
+    <a href="#pricing" class="cta-btn">התחל בחינם</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <span class="badge">AI Coaching לאנשי הייטק</span>
+    <h1>האמונה שעוצרת אותך<br>שווה לך 300,000 ₪ בשנה.</h1>
+    <p class="subtitle">
+      AI Coaching שמזהה ומשחרר את האמונות המגבילות שחוסמות לך קידום, שכר, וביטחון — תוך דקות, לא חודשים.
+    </p>
+    <a href="#pricing" class="cta-btn">התחל סשן ראשון בחינם</a>
+    <span class="cta-sub">ללא כרטיס אשראי. 15 דקות. מהספה.</span>
+    <div class="hero-stat">
+      <strong>64%</strong> מאנשי ההייטק חיים עם Imposter Syndrome. רובם לא יודעים שאפשר לשחרר את זה ב-15 דקות.
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAIN POINTS ===== -->
+<section class="pain-section section">
+  <div class="container">
+    <div class="pain-header">
+      <span class="badge">זה אתה?</span>
+      <h2>שלוש אמונות שעולות לך הון</h2>
+    </div>
+
+    <div class="pain-card">
+      <h3>"כולם יגלו שאני לא באמת יודע"</h3>
+      <p>
+        אתה יושב בישיבה עם אנשים שאתה בטוח שיודעים יותר ממך. יש לך רעיון — אבל אתה שותק. כי מה אם זה טיפשי? מה אם ישאלו שאלה שלא תדע לענות עליה? מה אם יגלו שאתה לא באמת שייך לפה?
+      </p>
+      <p>
+        אז אתה ממשיך לשתוק. ומישהו אחר — שיודע פחות ממך, אבל מאמין בעצמו יותר — מקבל את הקידום.
+      </p>
+      <span class="stat">64% מאנשי ההייטק חווים את זה. וזה רק מחמיר עם הזמן.</span>
+    </div>
+
+    <div class="pain-card">
+      <h3>"אני יודע שאני שווה יותר — אבל לא מצליח לבקש"</h3>
+      <p>
+        הגיע הרגע. שיחת שכר, ראיון עבודה, סקירה שנתית. אתה יודע בדיוק כמה אתה שווה בשוק — בדקת ב-Glassdoor, דיברת עם חברים, יש לך את המספרים.
+      </p>
+      <p>
+        ואז הפה לא נפתח. במקום לבקש 45K אתה אומר "אני גמיש." במקום "אני רוצה להוביל" אתה אומר "אשמח לעזור."
+      </p>
+      <span class="stat">רק 44% מנהלים מו"מ על שכר. השאר משלמים מס שקט של עשרות אלפי ₪ בשנה.</span>
+    </div>
+
+    <div class="pain-card">
+      <h3>"ניסיתי הכל — ושום דבר לא באמת זז"</h3>
+      <p>
+        קראת את Atomic Habits. שמעת את הובֶרמן. אולי אפילו שילמת על קואצ'ינג ב-500 ₪ לפגישה. ולמחרת? אותו קול פנימי. אותה תחושה. אותו פחד.
+      </p>
+      <p>
+        כי ספרים מלמדים <strong>מה</strong> לעשות. קואצ'ינג מלמד <strong>איך</strong> לעשות. אבל אף אחד לא עוזר לך לשחרר את <strong>מה שעוצר אותך</strong> מלעשות.
+      </p>
+      <span class="stat">68% מקוראי Self-Help קונים עוד ספר — במקום ליישם את הראשון.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE SHIFT ===== -->
+<section class="shift-section section">
+  <div class="container">
+    <span class="badge">שינוי פרספקטיבה</span>
+    <h2>מה אם הבעיה פשוט לא שם?</h2>
+    <p class="subtitle">
+      כל החיים סיפרו לך שצריך <strong>יותר ידע</strong>, <strong>יותר כלים</strong>, <strong>יותר מוטיבציה</strong>.<br>
+      אבל מה אם הבעיה היא לא שחסר לך משהו — אלא שמשהו <strong>מיותר</strong> נמצא שם?
+    </p>
+    <div class="beliefs-grid">
+      <div class="belief-tag">"אם אצליח יותר מדי, אאבד חברים"</div>
+      <div class="belief-tag">"אני לא מספיק טוב להוביל"</div>
+      <div class="belief-tag">"כסף הולך לאנשים אחרים"</div>
+      <div class="belief-tag">"אם ידחו אותי — אני לא שווה"</div>
+    </div>
+    <div class="shift-metaphor">
+      אמונה אחת. משפט אחד שנטעו בך — בבית, בצבא, בבית ספר — ומאז הוא רץ ברקע כמו <strong>process שאוכל 90% מה-CPU.</strong>
+      <br><br>
+      אתה לא צריך עוד ספר. <strong>אתה צריך לעשות kill לתהליך שרץ ברקע.</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TRANSFORMATION ===== -->
+<section class="transform-section section">
+  <div class="container">
+    <h2>מה קורה כשמשחררים אמונה מגבילה</h2>
+
+    <div class="transform-card">
+      <div class="transform-before">"אני לא יכול לבקש העלאה, מה אם יגידו לא?"</div>
+      <div class="transform-arrow">←</div>
+      <div class="transform-after">ביקשתי 30% יותר — וקיבלתי.</div>
+    </div>
+    <div class="transform-card">
+      <div class="transform-before">"אני מעדיף להישאר IC, אני לא מנהל"</div>
+      <div class="transform-arrow">←</div>
+      <div class="transform-after">לקחתי תפקיד Team Lead בלי פחד.</div>
+    </div>
+    <div class="transform-card">
+      <div class="transform-before">"בישיבות אני שותק, מה אם יחשבו שאני טיפש?"</div>
+      <div class="transform-arrow">←</div>
+      <div class="transform-after">אני מדבר. ואנשים מקשיבים.</div>
+    </div>
+
+    <p class="transform-note">
+      השינוי לא לוקח חודשים של טיפול.<br>
+      <strong>הוא לוקח סשן אחד ממוקד.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how-section section">
+  <div class="container">
+    <h2>איך זה עובד</h2>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>מיפוי</h3>
+          <p>אתה בוחר סגנון תקשורת שמתאים לך (ישיר / רגיש / רוחני / פרובוקטיבי) ומתחיל שיחה. ה-AI שואל שאלות ממוקדות — לא שאלון משעמם, אלא שיחה חכמה שנכנסת מתחת לרדאר של ה"אני מסתדר בסדר."</p>
+          <span class="step-time">5 דקות</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>זיהוי האמונה</h3>
+          <p>דרך שיחה טבעית, ה-AI חושף את המשפט המדויק שרץ לך ברקע. לא "אתה חושב שאתה לא שווה" גנרי — אלא את האמונה הספציפית שלך, עם המילים שלך.</p>
+          <span class="step-time">10 דקות</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>שחרור</h3>
+          <p>ה-AI מוביל אותך דרך תהליך מובנה שמשנה את היחס שלך לאמונה. לא חשיבה חיובית. לא אפירמציות. 14 זוויות שונות שמערערות את האמונה עד שהיא מתרופפת. שינוי שמורגש בגוף.</p>
+          <span class="step-time">10-15 דקות</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>עיגון</h3>
+          <p>מדיטציה קצרה מותאמת אישית שמעגנת את האמונה החדשה. אתה יוצא מהסשן עם תחושה שונה — לא רק מחשבה שונה.</p>
+          <span class="step-time">3 דקות</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="features-section section">
+  <div class="container">
+    <h2>3 יכולות שמשנות הכל</h2>
+
+    <div class="feature-card">
+      <h3>זיהוי אמונות חכם — סוף סוף מבין למה אתה תקוע</h3>
+      <div class="example">
+        לא "אתה מרגיש חוסר ביטחון."<br>
+        אלא: "אתה מאמין שאם תצליח יותר מאבא שלך, תבגוד בו."
+      </div>
+      <p class="text-muted">האלגוריתם מנתח את מה שאתה אומר, מחבר את הנקודות, ומגלה את האמונה שיושבת מתחת למה שאתה חושב שהבעיה. כמו debugger — אבל לקוד שרץ בראש שלך.</p>
+      <p class="outcome">תוך 10 דקות אתה יודע בדיוק מה עוצר אותך.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>שחרור מותאם אישית — אמונה שישבה שנים נעלמת בסשן אחד</h3>
+      <div class="example">
+        14 זוויות שונות שמערערות את האמונה. לא "תחשוב חיובי" — אלא שאלות ממוקדות שגורמות לך לראות את האמונה אחרת, עד שהיא פשוט לא מחזיקה יותר.
+      </div>
+      <p class="text-muted">לא חשיבה חיובית שנמוגה למחרת — שינוי עמוק שמורגש מיד.</p>
+      <p class="outcome">שינוי שנשאר. לא הרגלה — שחרור.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>מעקב מדיד — רואה שינוי בדאטה, לא רק בתחושה</h3>
+      <div class="example">
+        כל אמונה שזוהתה נכנסת ל-Journal עם מעקב:<br>
+        זוהתה → בעבודה → שוחררה + ציון חוזק לפני ואחרי (1-10)
+      </div>
+      <p class="text-muted">אתה לא צריך "להרגיש" שמשהו השתנה. אתה רואה את זה. כמו dashboard — אבל לאמונות שעלו לך מיליונים.</p>
+      <p class="outcome">התקדמות מדידה, לא רק תחושה.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="pricing-section section" id="pricing">
+  <div class="container">
+    <span class="badge">תמחור</span>
+    <h2>כמה זה עולה (וכמה עולה לא לעשות את זה)</h2>
+    <p class="subtitle">הדרך הישנה:</p>
+
+    <div class="pricing-compare">
+      <div class="pricing-old">
+        <div class="name">קואצ'ינג אישי</div>
+        <div class="price">2,000-4,000 ₪</div>
+        <div class="note">לחודש, פגישה בשבוע</div>
+      </div>
+      <div class="pricing-old">
+        <div class="name">סדנת שינוי</div>
+        <div class="price">5,000-15,000 ₪</div>
+        <div class="note">חד-פעמי, התלהבות ל-3 ימים</div>
+      </div>
+      <div class="pricing-old">
+        <div class="name">BetterHelp</div>
+        <div class="price">1,000-1,500 ₪</div>
+        <div class="note">לחודש, לא מתמחה באמונות</div>
+      </div>
+      <div class="pricing-old">
+        <div class="name">ספרים + קורסים</div>
+        <div class="price">200-500 ₪</div>
+        <div class="note">לחודש, ידע בלי שינוי</div>
+      </div>
+    </div>
+
+    <div class="pricing-main">
+      <div class="pricing-badge">i-therapy</div>
+      <div class="price">79 ₪</div>
+      <div class="price-period">לחודש. סשנים ללא הגבלה. 24/7.</div>
+
+      <ul class="pricing-features">
+        <li>זיהוי אמונות מגבילות ללא הגבלה</li>
+        <li>שחרור אמונות בטכניקות מתקדמות</li>
+        <li>4 סגנונות תקשורת לבחירתך</li>
+        <li>מדיטציות מותאמות אישית</li>
+        <li>Journal מעקב התקדמות מלא</li>
+        <li>זמין 24/7 בעברית</li>
+      </ul>
+
+      <a href="#" class="cta-btn" style="width: 100%;">התחל סשן ראשון בחינם</a>
+      <span class="cta-sub">ללא כרטיס אשראי</span>
+
+      <div class="pricing-compare-line">
+        סשן אחד של קואצ'ינג = <strong>500-1,000 ₪</strong><br>
+        חודש שלם של i-therapy = <strong>79 ₪</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SOCIAL PROOF ===== -->
+<section class="proof-section section">
+  <div class="container">
+    <h2>מה אומרים משתמשים</h2>
+    <div class="testimonials">
+      <div class="testimonial">
+        <p>"הייתי בטוח שאני צריך MBA כדי להתקדם. הסשן חשף שהאמונה האמיתית היא 'אני לא ראוי להוביל בלי אישור מבחוץ.' שחררתי את זה — והתמניתי ל-TL חודש אחרי."</p>
+        <div class="author">מ.</div>
+        <div class="role">Senior Developer, חברת הייטק</div>
+      </div>
+      <div class="testimonial">
+        <p>"שנתיים בקואצ'ינג ב-800 ₪ לפגישה ולא הרגשתי שינוי אמיתי. פה תוך 15 דקות הבנתי למה אני פוחדת להציג בפני צוות. זה היה מטורף."</p>
+        <div class="author">ש.</div>
+        <div class="role">Product Manager</div>
+      </div>
+      <div class="testimonial">
+        <p>"הייתי ספקן — AI שמשנה אמונות? אבל הניסיון הראשון היה כמו debug session לראש. הוא מצא את ה-bug שאף מטפל לא מצא."</p>
+        <div class="author">א.</div>
+        <div class="role">Full Stack Developer</div>
+      </div>
+    </div>
+    <p class="proof-note">* עדויות לדוגמה למבנה ה-social proof. יוחלפו בעדויות אמיתיות של משתמשים.</p>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="faq-section section">
+  <div class="container">
+    <h2>שאלות נפוצות</h2>
+
+    <div class="faq-item open">
+      <button class="faq-question">
+        <span>"AI לא יכול להחליף מטפל אמיתי"</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p><strong>צודק. ולכן i-therapy לא מחליף מטפל.</strong></p>
+        <p>i-therapy הוא לא ChatGPT עם prompt של "תהיה מטפל." זו מערכת מובנית עם טכניקות שינוי אמונות מתקדמות, אלגוריתם שבוחר את הטכניקה המתאימה, ותהליך מובנה מזיהוי ועד שחרור.</p>
+        <p>הוא מיועד לפיתוח עצמי ושחרור חסמים ברמת 4-7 מתוך 10 — לא לטראומה, דיכאון קליני, או חרדה חמורה. אם מזוהה מצב שדורש מטפל אנושי — המערכת תפנה אותך.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>"אני לא מאמין ב'חשיבה חיובית' ו'אפירמציות'"</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p><strong>גם אנחנו לא.</strong></p>
+        <p>i-therapy לא אומר לך "תגיד לעצמך שאתה מדהים." זה לא עובד ואנחנו יודעים את זה.</p>
+        <p>במקום זה, המערכת משתמשת בשאלות ממוקדות שחושפות עיוותים בחשיבה, ריפריימינג מרובה זוויות, ואינטגרציית קונפליקטים פנימיים. זה לא "תרגיש טוב." זה <strong>"תבין למה אתה חושב מה שאתה חושב — ואז תבחר אם זה עדיין נכון."</strong></p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>"79 ₪ בחודש? מה אפשר לקבל בכזה מחיר?"</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p><strong>בוא נהפוך את השאלה: כמה עולה לך לא לעשות את זה?</strong></p>
+        <p>אם אתה לא מנהל מו"מ על שכר בגלל אמונה מגבילה — אתה מפסיד עשרות אלפי שקלים בשנה. אם אתה מסרב לקידום בגלל imposter syndrome — אתה מפסיד מאות אלפים לאורך הקריירה.</p>
+        <p>קואצ'ינג אנושי שעושה את אותו דבר עולה 500-1,000 ₪ לסשן. i-therapy נותן גישה בלתי מוגבלת, 24 שעות ביממה, תמורת פחות מארוחה בשרון. <strong>הסשן הראשון בחינם — תנסה ותחליט.</strong></p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>"אין לי זמן — בקושי יש לי שעה ביום לעצמי"</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p><strong>סשן לוקח 15 דקות. לא שעה. לא 50 דקות כמו טיפול.</strong></p>
+        <p>אין צורך בתיאום, אין צורך לנסוע, אין צורך "להתכונן." 15 דקות פעם בשבוע = שעה בחודש שמשנה את הקריירה שלך.</p>
+        <p>לשם השוואה: אתה מבזבז יותר זמן ביום על scrolling ב-LinkedIn.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>"איך אני יודע שזה לא עוד אפליקציה שנשכחת?"</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p><strong>כי אפליקציות wellness מנהלות סימפטומים. i-therapy מסיר את השורש.</strong></p>
+        <p>Headspace עוזר לך להירגע. למחרת אתה חוזר לאותו מתח. כי המדיטציה לא שינתה את האמונה שיוצרת את המתח.</p>
+        <p>i-therapy מזהה את האמונה, משחרר אותה, מעגן את השינוי, ומודד את ההתקדמות. <strong>אחרי שאמונה משוחררת — היא לא חוזרת. זה לא הרגלה. זה שינוי.</strong></p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== FINAL CTA ===== -->
+<section class="final-cta">
+  <div class="container">
+    <h2>עוד שנה מהיום — אתה יכול להיות באותו מקום בדיוק.</h2>
+    <p class="alt">או שאתה יכול לשחרר את האמונה שמחזיקה אותך שם.</p>
+    <a href="#" class="cta-btn">התחל סשן ראשון בחינם</a>
+    <span class="cta-sub">15 דקות. בלי כרטיס אשראי. מהספה.</span>
+    <p class="quote">"לא ידעתי שאפשר ככה. 15 דקות שינו לי את הקריירה."</p>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <p>i-therapy הוא כלי לפיתוח עצמי ושיפור ביצועים. הוא אינו מחליף טיפול פסיכולוגי, פסיכיאטרי, או ייעוץ רפואי.</p>
+    <p>אם את/ה חווה מצוקה נפשית חמורה, אנא פנה לקו ער"ן (1201) או לשירותי חירום.</p>
+    <p>המידע שלך פרטי ומוצפן. אנחנו לא משתפים מידע עם צדדים שלישיים. נקודה.</p>
+    <br>
+    <p>&copy; 2026 i-therapy. כל הזכויות שמורות.</p>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      // Toggle clicked
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
