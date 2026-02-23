@@ -16,7 +16,7 @@ export function ChatContainer({
   isStreaming,
   onSend,
 }: ChatContainerProps) {
-  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+  const [bottomOffset, setBottomOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const pollTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -30,18 +30,16 @@ export function ChatContainer({
 
   const syncViewport = useCallback(() => {
     const vv = window.visualViewport;
-    if (vv) {
-      setViewportHeight(vv.height);
-      scrollToBottom();
-    }
+    if (!vv) return;
+    // Calculate how much the keyboard pushes up from the bottom
+    const offset = window.innerHeight - vv.height - vv.offsetTop;
+    setBottomOffset(Math.max(0, offset));
+    scrollToBottom();
   }, [scrollToBottom]);
 
   useEffect(() => {
     const vv = window.visualViewport;
     if (!vv) return;
-
-    // Initial set
-    setViewportHeight(vv.height);
 
     vv.addEventListener("resize", syncViewport);
     vv.addEventListener("scroll", syncViewport);
@@ -51,42 +49,36 @@ export function ChatContainer({
     };
   }, [syncViewport]);
 
-  // When viewport changes (keyboard opens/closes), scroll to bottom
+  // When bottomOffset changes, scroll to bottom
   useEffect(() => {
-    if (viewportHeight) {
-      scrollToBottom();
-    }
-  }, [viewportHeight, scrollToBottom]);
+    scrollToBottom();
+  }, [bottomOffset, scrollToBottom]);
 
-  // On focus: poll with setTimeout delays to catch keyboard animation
-  // iOS keyboard animation takes ~300ms, so check at multiple intervals
+  // On focus: poll to catch keyboard animation
   const handleFocusIn = useCallback(() => {
-    // Clear any existing poll timers
     pollTimersRef.current.forEach(clearTimeout);
     pollTimersRef.current = [];
 
-    // Poll at multiple intervals during keyboard animation
     const delays = [50, 100, 150, 200, 250, 300, 400, 500];
     for (const delay of delays) {
-      const timer = setTimeout(syncViewport, delay);
-      pollTimersRef.current.push(timer);
+      pollTimersRef.current.push(setTimeout(syncViewport, delay));
     }
   }, [syncViewport]);
 
-  // Cleanup timers
   useEffect(() => {
     return () => {
       pollTimersRef.current.forEach(clearTimeout);
     };
   }, []);
 
-  const mobileHeight = viewportHeight ? `${viewportHeight - 56}px` : "calc(100dvh - 56px)";
-
   return (
     <div
       ref={containerRef}
-      className="flex flex-col overflow-hidden"
-      style={{ height: mobileHeight }}
+      className="fixed left-0 right-0 flex flex-col overflow-hidden"
+      style={{
+        top: "56px",
+        bottom: `${bottomOffset}px`,
+      }}
       onFocus={handleFocusIn}
     >
       <MessageList messages={messages} />
