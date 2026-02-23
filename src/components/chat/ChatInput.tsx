@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from "react";
+import { useState, useCallback, useRef, type KeyboardEvent } from "react";
 import { cn } from "@/lib/utils";
 
 interface ChatInputProps {
@@ -10,7 +10,6 @@ interface ChatInputProps {
 
 export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
   const [input, setInput] = useState("");
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = useCallback(() => {
@@ -27,49 +26,14 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
     }
   };
 
-  // Handle mobile keyboard visibility using visualViewport API
-  useEffect(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    const handleResize = () => {
-      const offset = window.innerHeight - vv.height;
-      setKeyboardOffset(offset > 0 ? offset : 0);
-    };
-
-    vv.addEventListener("resize", handleResize);
-    vv.addEventListener("scroll", handleResize);
-    return () => {
-      vv.removeEventListener("resize", handleResize);
-      vv.removeEventListener("scroll", handleResize);
-    };
-  }, []);
-
-  // Scroll textarea into view when focused on mobile
-  const handleFocus = () => {
-    setTimeout(() => {
-      textareaRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }, 300);
-  };
-
   return (
-    <div
-      className="border-t border-border-light bg-white p-3 md:p-4 md:pb-4"
-      style={{
-        paddingBottom: keyboardOffset > 0
-          ? `${12}px`
-          : `calc(0.75rem + 3.5rem)`,
-        transform: keyboardOffset > 0 ? `translateY(-${keyboardOffset}px)` : undefined,
-        transition: "transform 0.1s ease-out",
-      }}
-    >
+    <div className="flex-shrink-0 border-t border-border-light bg-white p-3 md:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:pb-4">
       <div className="flex items-end gap-2 md:gap-3 max-w-3xl mx-auto">
         <textarea
           ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          onFocus={handleFocus}
           disabled={disabled}
           placeholder="כתוב הודעה..."
           rows={1}

@@ -16,7 +16,7 @@ export function ChatContainer({
   onSend,
 }: ChatContainerProps) {
   return (
-    <div className="flex flex-col h-[calc(100dvh-56px)] md:h-[calc(100vh-64px)]">
+    <div className="flex flex-col h-[calc(100dvh-56px)] md:h-[calc(100vh-64px)] overflow-hidden">
       <MessageList messages={messages} />
       <ChatInput onSend={onSend} disabled={isStreaming} />
     </div>

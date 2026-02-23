@@ -38,18 +38,26 @@ export const useBeliefStore = create<BeliefState>()((set, get) => ({
   loaded: false,
 
   loadFromSupabase: async () => {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        set({ loaded: true });
+        return;
+      }
 
-    const { data: rows } = await supabase
-      .from("beliefs")
-      .select("*")
-      .order("discovered_at", { ascending: false });
+      const { data: rows } = await supabase
+        .from("beliefs")
+        .select("*")
+        .order("discovered_at", { ascending: false });
 
-    set({ beliefs: (rows || []).map(rowToBelief), loaded: true });
+      set({ beliefs: (rows || []).map(rowToBelief), loaded: true });
+    } catch (error) {
+      console.error("Failed to load beliefs from Supabase:", error);
+      set({ loaded: true });
+    }
   },
 
   addBelief: (belief) => {

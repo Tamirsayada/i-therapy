@@ -126,10 +126,3 @@ body {
   }
 }
 
-/* Prevent mobile browser overscroll/bounce */
-@media (max-width: 767px) {
-  html, body {
-    overflow: hidden;
-    height: 100dvh;
-  }
-}

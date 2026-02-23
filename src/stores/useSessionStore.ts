@@ -78,44 +78,52 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
   loaded: false,
 
   loadFromSupabase: async () => {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    // Load sessions
-    const { data: sessionRows } = await supabase
-      .from("sessions")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    const sessions = (sessionRows || []).map(rowToSession);
-
-    // Load all messages for these sessions
-    const sessionIds = sessions.map((s) => s.id);
-    const messages: Record<string, Message[]> = {};
-
-    if (sessionIds.length > 0) {
-      const { data: messageRows } = await supabase
-        .from("messages")
-        .select("*")
-        .in("session_id", sessionIds)
-        .order("created_at", { ascending: true });
-
-      for (const row of messageRows || []) {
-        const msg = rowToMessage(row);
-        if (!messages[msg.sessionId]) messages[msg.sessionId] = [];
-        messages[msg.sessionId].push(msg);
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        set({ loaded: true });
+        return;
       }
-    }
 
-    // Initialize empty arrays for sessions without messages
-    for (const s of sessions) {
-      if (!messages[s.id]) messages[s.id] = [];
-    }
+      // Load sessions
+      const { data: sessionRows } = await supabase
+        .from("sessions")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    set({ sessions, messages, loaded: true });
+      const sessions = (sessionRows || []).map(rowToSession);
+
+      // Load all messages for these sessions
+      const sessionIds = sessions.map((s) => s.id);
+      const messages: Record<string, Message[]> = {};
+
+      if (sessionIds.length > 0) {
+        const { data: messageRows } = await supabase
+          .from("messages")
+          .select("*")
+          .in("session_id", sessionIds)
+          .order("created_at", { ascending: true });
+
+        for (const row of messageRows || []) {
+          const msg = rowToMessage(row);
+          if (!messages[msg.sessionId]) messages[msg.sessionId] = [];
+          messages[msg.sessionId].push(msg);
+        }
+      }
+
+      // Initialize empty arrays for sessions without messages
+      for (const s of sessions) {
+        if (!messages[s.id]) messages[s.id] = [];
+      }
+
+      set({ sessions, messages, loaded: true });
+    } catch (error) {
+      console.error("Failed to load from Supabase:", error);
+      set({ loaded: true });
+    }
   },
 
   createSession: (type, style) => {
