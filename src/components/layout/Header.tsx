@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,20 @@ const navItems = [
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  const checkKeyboard = useCallback(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    setIsKeyboardOpen(window.innerHeight - vv.height > 100);
+  }, []);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    vv.addEventListener("resize", checkKeyboard);
+    return () => vv.removeEventListener("resize", checkKeyboard);
+  }, [checkKeyboard]);
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -63,8 +78,11 @@ export function Header() {
         </div>
       </header>
 
-      {/* Mobile bottom navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-border-light safe-area-bottom">
+      {/* Mobile bottom navigation - hidden when keyboard is open */}
+      <nav className={cn(
+        "md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-border-light safe-area-bottom",
+        isKeyboardOpen && "hidden"
+      )}>
         <div className="flex items-center justify-around h-14 px-2">
           {navItems.map((item) => (
             <Link
