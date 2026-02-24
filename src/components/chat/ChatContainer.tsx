@@ -12,7 +12,7 @@ interface ChatContainerProps {
 }
 
 const HEADER_HEIGHT = 56;
-const MOBILE_NAV_HEIGHT = 56; // h-14 bottom nav
+const MOBILE_NAV_HEIGHT = 56;
 
 export function ChatContainer({
   messages,
@@ -20,74 +20,60 @@ export function ChatContainer({
   onSend,
 }: ChatContainerProps) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-  const initialHeight =
-    typeof window !== "undefined"
-      ? window.innerHeight - HEADER_HEIGHT - (isMobile ? MOBILE_NAV_HEIGHT : 0)
-      : 600;
-
-  const [containerHeight, setContainerHeight] = useState(initialHeight);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const pollTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const initialHeightRef = useRef(
+    typeof window !== "undefined" ? window.innerHeight : 0
+  );
 
   const scrollToBottom = useCallback(() => {
     if (!containerRef.current) return;
-    const messageList = containerRef.current.querySelector("[data-message-list]");
+    const messageList =
+      containerRef.current.querySelector("[data-message-list]");
     if (messageList) {
       messageList.scrollTop = messageList.scrollHeight;
     }
   }, []);
 
-  const syncViewport = useCallback(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    // On iOS, visualViewport.height shrinks when keyboard opens
-    // Use it directly to calculate available space
-    const isKeyboardOpen = window.innerHeight - vv.height > 50;
-    const navOffset = !isKeyboardOpen && isMobile ? MOBILE_NAV_HEIGHT : 0;
-
-    // Container height = visual viewport height minus header minus nav (if visible)
-    const height = vv.height - HEADER_HEIGHT - navOffset;
-    setContainerHeight(Math.max(200, height));
-    scrollToBottom();
-  }, [scrollToBottom, isMobile]);
-
-  useEffect(() => {
-    // Initial sync
-    syncViewport();
-
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    vv.addEventListener("resize", syncViewport);
-    vv.addEventListener("scroll", syncViewport);
-    return () => {
-      vv.removeEventListener("resize", syncViewport);
-      vv.removeEventListener("scroll", syncViewport);
-    };
-  }, [syncViewport]);
-
-  // When height changes, scroll to bottom
-  useEffect(() => {
-    scrollToBottom();
-  }, [containerHeight, scrollToBottom]);
-
-  // On focus: poll to catch keyboard animation
-  const handleFocusIn = useCallback(() => {
-    pollTimersRef.current.forEach(clearTimeout);
-    pollTimersRef.current = [];
-
-    const delays = [50, 100, 150, 200, 250, 300, 400, 500];
-    for (const delay of delays) {
-      pollTimersRef.current.push(setTimeout(syncViewport, delay));
-    }
-  }, [syncViewport]);
-
-  useEffect(() => {
-    return () => {
-      pollTimersRef.current.forEach(clearTimeout);
-    };
+  // With interactive-widget=resizes-content, window.innerHeight shrinks
+  // when keyboard opens. Compare to initial height to detect keyboard.
+  const checkKeyboard = useCallback(() => {
+    const heightDiff = initialHeightRef.current - window.innerHeight;
+    setIsKeyboardOpen(heightDiff > 100);
   }, []);
+
+  useEffect(() => {
+    // Listen to resize events (triggered by keyboard on iOS with resizes-content)
+    window.addEventListener("resize", checkKeyboard);
+
+    // Also listen to visualViewport as backup
+    const vv = window.visualViewport;
+    if (vv) {
+      vv.addEventListener("resize", checkKeyboard);
+    }
+
+    return () => {
+      window.removeEventListener("resize", checkKeyboard);
+      if (vv) {
+        vv.removeEventListener("resize", checkKeyboard);
+      }
+    };
+  }, [checkKeyboard]);
+
+  // Scroll to bottom when keyboard state changes
+  useEffect(() => {
+    scrollToBottom();
+  }, [isKeyboardOpen, scrollToBottom]);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  // Bottom offset: when keyboard closed on mobile, leave room for nav bar.
+  // When keyboard open, no nav offset needed (nav is hidden).
+  const bottomOffset =
+    !isKeyboardOpen && isMobile ? MOBILE_NAV_HEIGHT : 0;
 
   return (
     <div
@@ -95,9 +81,8 @@ export function ChatContainer({
       className="fixed left-0 right-0 flex flex-col overflow-hidden"
       style={{
         top: `${HEADER_HEIGHT}px`,
-        height: `${containerHeight}px`,
+        bottom: `${bottomOffset}px`,
       }}
-      onFocus={handleFocusIn}
     >
       <MessageList messages={messages} />
       <ChatInput onSend={onSend} disabled={isStreaming} />

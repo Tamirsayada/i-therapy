@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -17,18 +17,23 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const initialHeightRef = useRef(
+    typeof window !== "undefined" ? window.innerHeight : 0
+  );
 
   const checkKeyboard = useCallback(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-    setIsKeyboardOpen(window.innerHeight - vv.height > 100);
+    const heightDiff = initialHeightRef.current - window.innerHeight;
+    setIsKeyboardOpen(heightDiff > 100);
   }, []);
 
   useEffect(() => {
+    window.addEventListener("resize", checkKeyboard);
     const vv = window.visualViewport;
-    if (!vv) return;
-    vv.addEventListener("resize", checkKeyboard);
-    return () => vv.removeEventListener("resize", checkKeyboard);
+    if (vv) vv.addEventListener("resize", checkKeyboard);
+    return () => {
+      window.removeEventListener("resize", checkKeyboard);
+      if (vv) vv.removeEventListener("resize", checkKeyboard);
+    };
   }, [checkKeyboard]);
 
   const handleLogout = async () => {
