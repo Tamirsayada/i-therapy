@@ -11,14 +11,21 @@ interface ChatContainerProps {
   onSend: (content: string) => void;
 }
 
+const HEADER_HEIGHT = 56;
+const MOBILE_NAV_HEIGHT = 56; // h-14 bottom nav
+
 export function ChatContainer({
   messages,
   isStreaming,
   onSend,
 }: ChatContainerProps) {
-  const [bottomOffset, setBottomOffset] = useState(
-    typeof window !== "undefined" && window.innerWidth < 768 ? 56 : 0
-  );
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const initialHeight =
+    typeof window !== "undefined"
+      ? window.innerHeight - HEADER_HEIGHT - (isMobile ? MOBILE_NAV_HEIGHT : 0)
+      : 600;
+
+  const [containerHeight, setContainerHeight] = useState(initialHeight);
   const containerRef = useRef<HTMLDivElement>(null);
   const pollTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -30,23 +37,25 @@ export function ChatContainer({
     }
   }, []);
 
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-  const MOBILE_NAV_HEIGHT = 56; // h-14 bottom nav
-
   const syncViewport = useCallback(() => {
     const vv = window.visualViewport;
     if (!vv) return;
-    // Calculate how much the keyboard pushes up from the bottom
-    const keyboardOffset = window.innerHeight - vv.height - vv.offsetTop;
-    // When keyboard is open, no need for nav offset (keyboard covers it)
-    // When keyboard is closed, add mobile nav height
-    const isKeyboardOpen = keyboardOffset > 50;
-    const navOffset = (!isKeyboardOpen && isMobile) ? MOBILE_NAV_HEIGHT : 0;
-    setBottomOffset(Math.max(0, keyboardOffset) + navOffset);
+
+    // On iOS, visualViewport.height shrinks when keyboard opens
+    // Use it directly to calculate available space
+    const isKeyboardOpen = window.innerHeight - vv.height > 50;
+    const navOffset = !isKeyboardOpen && isMobile ? MOBILE_NAV_HEIGHT : 0;
+
+    // Container height = visual viewport height minus header minus nav (if visible)
+    const height = vv.height - HEADER_HEIGHT - navOffset;
+    setContainerHeight(Math.max(200, height));
     scrollToBottom();
   }, [scrollToBottom, isMobile]);
 
   useEffect(() => {
+    // Initial sync
+    syncViewport();
+
     const vv = window.visualViewport;
     if (!vv) return;
 
@@ -58,10 +67,10 @@ export function ChatContainer({
     };
   }, [syncViewport]);
 
-  // When bottomOffset changes, scroll to bottom
+  // When height changes, scroll to bottom
   useEffect(() => {
     scrollToBottom();
-  }, [bottomOffset, scrollToBottom]);
+  }, [containerHeight, scrollToBottom]);
 
   // On focus: poll to catch keyboard animation
   const handleFocusIn = useCallback(() => {
@@ -85,8 +94,8 @@ export function ChatContainer({
       ref={containerRef}
       className="fixed left-0 right-0 flex flex-col overflow-hidden"
       style={{
-        top: "56px",
-        bottom: `${bottomOffset}px`,
+        top: `${HEADER_HEIGHT}px`,
+        height: `${containerHeight}px`,
       }}
       onFocus={handleFocusIn}
     >
