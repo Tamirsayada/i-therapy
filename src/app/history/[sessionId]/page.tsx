@@ -83,61 +83,64 @@ export default function HistorySessionPage() {
       session.phase === "tool_execution" ||
       session.phase === "wheel_chat");
 
+  const sessionHeader = (
+    <div className="border-b border-border-light bg-white shrink-0">
+      <div className="max-w-3xl mx-auto px-4 py-3">
+        <div className="flex items-center justify-between gap-2">
+          <button
+            onClick={() => router.push("/history")}
+            className="flex items-center gap-1 text-sm text-text-secondary hover:text-primary transition-colors cursor-pointer"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+            חזרה
+          </button>
+
+          <div className="flex gap-2 items-center flex-wrap justify-end">
+            <Badge variant={phaseVariants[session.phase]}>
+              {phaseLabels[session.phase]}
+            </Badge>
+            {session.communicationStyle && (
+              <Badge variant="default">
+                {styleLabels[session.communicationStyle]}
+              </Badge>
+            )}
+          </div>
+        </div>
+
+        {session.identifiedBelief && (
+          <p className="text-text-secondary text-xs mt-2 leading-relaxed truncate">
+            אמונה: &ldquo;{session.identifiedBelief}&rdquo;
+          </p>
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col h-[calc(100vh-64px)]">
-      {/* Session info header */}
-      <div className="border-b border-border-light bg-white shrink-0">
-        <div className="max-w-3xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-2">
-            <button
-              onClick={() => router.push("/history")}
-              className="flex items-center gap-1 text-sm text-text-secondary hover:text-primary transition-colors cursor-pointer"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-              חזרה
-            </button>
-
-            <div className="flex gap-2 items-center flex-wrap justify-end">
-              <Badge variant={phaseVariants[session.phase]}>
-                {phaseLabels[session.phase]}
-              </Badge>
-              {session.communicationStyle && (
-                <Badge variant="default">
-                  {styleLabels[session.communicationStyle]}
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          {session.identifiedBelief && (
-            <p className="text-text-secondary text-xs mt-2 leading-relaxed truncate">
-              אמונה: &ldquo;{session.identifiedBelief}&rdquo;
-            </p>
-          )}
-        </div>
-      </div>
-
       {/* Chat area - with input if session is active */}
       {canChat ? (
         <ChatContainer
           messages={messages}
           isStreaming={isStreaming}
           onSend={sendMessage}
+          header={sessionHeader}
         />
       ) : (
         <>
+          {sessionHeader}
           <div className="flex-1 overflow-hidden">
             <div className="max-w-3xl mx-auto h-full">
               <MessageList messages={messages} />

@@ -121,18 +121,18 @@ function MappingSession({
   // Chat phase
   if (session.phase === "wheel_chat") {
     return (
-      <div className="relative">
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
-          <Badge variant="primary">
-            חקירת תחום: {areaNameMap[selectedArea || ""] || ""}
-          </Badge>
-        </div>
-        <ChatContainer
-          messages={messages}
-          isStreaming={isStreaming}
-          onSend={sendMessage}
-        />
-      </div>
+      <ChatContainer
+        messages={messages}
+        isStreaming={isStreaming}
+        onSend={sendMessage}
+        header={
+          <div className="flex justify-center py-3 shrink-0">
+            <Badge variant="primary">
+              חקירת תחום: {areaNameMap[selectedArea || ""] || ""}
+            </Badge>
+          </div>
+        }
+      />
     );
   }
 

@@ -208,19 +208,17 @@ export default function ReleaseSessionPage() {
   }
 
   return (
-    <div className="relative">
-      {/* Phase indicator */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
-        <Badge variant={session.phase === "completed" ? "success" : "primary"}>
-          {phaseLabel}
-        </Badge>
-      </div>
-
-      <ChatContainer
-        messages={messages}
-        isStreaming={isStreaming}
-        onSend={sendMessage}
-      />
-    </div>
+    <ChatContainer
+      messages={messages}
+      isStreaming={isStreaming}
+      onSend={sendMessage}
+      header={
+        <div className="flex justify-center py-3 shrink-0">
+          <Badge variant={session.phase === "completed" ? "success" : "primary"}>
+            {phaseLabel}
+          </Badge>
+        </div>
+      }
+    />
   );
 }

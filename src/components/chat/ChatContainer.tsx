@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import type { Message } from "@/types/message";
 import { MessageList } from "./MessageList";
 import { ChatInput } from "./ChatInput";
@@ -9,6 +9,7 @@ interface ChatContainerProps {
   messages: Message[];
   isStreaming: boolean;
   onSend: (content: string) => void;
+  header?: ReactNode;
 }
 
 const HEADER_HEIGHT = 56;
@@ -18,6 +19,7 @@ export function ChatContainer({
   messages,
   isStreaming,
   onSend,
+  header,
 }: ChatContainerProps) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
@@ -78,12 +80,13 @@ export function ChatContainer({
   return (
     <div
       ref={containerRef}
-      className="fixed left-0 right-0 flex flex-col overflow-hidden"
+      className="fixed left-0 right-0 flex flex-col overflow-hidden bg-background"
       style={{
         top: `${HEADER_HEIGHT}px`,
         bottom: `${bottomOffset}px`,
       }}
     >
+      {header}
       <MessageList messages={messages} />
       <ChatInput onSend={onSend} disabled={isStreaming} />
     </div>
