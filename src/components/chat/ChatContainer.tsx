@@ -16,7 +16,9 @@ export function ChatContainer({
   isStreaming,
   onSend,
 }: ChatContainerProps) {
-  const [bottomOffset, setBottomOffset] = useState(0);
+  const [bottomOffset, setBottomOffset] = useState(
+    typeof window !== "undefined" && window.innerWidth < 768 ? 56 : 0
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const pollTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -28,14 +30,21 @@ export function ChatContainer({
     }
   }, []);
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const MOBILE_NAV_HEIGHT = 56; // h-14 bottom nav
+
   const syncViewport = useCallback(() => {
     const vv = window.visualViewport;
     if (!vv) return;
     // Calculate how much the keyboard pushes up from the bottom
-    const offset = window.innerHeight - vv.height - vv.offsetTop;
-    setBottomOffset(Math.max(0, offset));
+    const keyboardOffset = window.innerHeight - vv.height - vv.offsetTop;
+    // When keyboard is open, no need for nav offset (keyboard covers it)
+    // When keyboard is closed, add mobile nav height
+    const isKeyboardOpen = keyboardOffset > 50;
+    const navOffset = (!isKeyboardOpen && isMobile) ? MOBILE_NAV_HEIGHT : 0;
+    setBottomOffset(Math.max(0, keyboardOffset) + navOffset);
     scrollToBottom();
-  }, [scrollToBottom]);
+  }, [scrollToBottom, isMobile]);
 
   useEffect(() => {
     const vv = window.visualViewport;
